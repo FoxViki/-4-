@@ -1,0 +1,374 @@
+стрим
+
+package seminar3.HW;
+
+//Ч —оздать класс ѕоток, содержащий в себе список ”чебных√рупп и реализующий интерфейс Iterable;
+
+import seminar3.StudentGroup;
+
+import java.util.Iterator;
+import java.util.List;
+
+public class Stream implements Iterable<StudentGroup> {
+
+    List<StudentGroup> groupsList;
+
+    public Stream(List<StudentGroup> groupsList) {
+        this.groupsList = groupsList;
+    }
+
+    public List<StudentGroup> getGroupsList() {
+        return groupsList;
+    }
+
+    public  void addGroup (StudentGroup studentGroup) {
+        groupsList.add(studentGroup);
+    }
+
+    @Override
+    public Iterator<StudentGroup> iterator() {
+        return new StreamIterator(this);
+    }
+
+    @Override
+    public String toString() {
+        return "Stream{" +
+                "groupsList=" + groupsList +
+                '}';
+    }
+}
+
+
+
+
+стрим компаратор
+
+package seminar3.HW;
+
+
+import java.util.Comparator;
+
+public class StreamComparator implements Comparator<Stream> {
+
+    @Override
+    public int compare(Stream o1, Stream o2) {
+        int stream1Size = o1.getGroupsList().size();
+        int stream2Size = o2.getGroupsList().size();
+
+        return Integer.compare(stream1Size, stream2Size);
+    }
+}
+
+
+
+
+стрим итератор
+import seminar3.StudentGroup;
+
+import java.util.Iterator;
+import java.util.List;
+
+public class StreamIterator implements Iterator<StudentGroup> {
+    List<StudentGroup> groupsList;
+    int counter;
+
+    public StreamIterator(Stream stream) {
+        this.groupsList = stream.getGroupsList();
+        counter = 0;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return counter < groupsList.size();
+    }
+
+    @Override
+    public StudentGroup next() {
+        if(hasNext())
+            return groupsList.get(counter++);
+        return null;
+    }
+}
+
+
+
+
+стрим сервис
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class StreamService {
+
+    List<Stream> streams;
+
+    public StreamService(List<Stream> streams) {
+        this.streams = streams;
+    }
+
+    public List<Stream> sortBySize() {
+        List<Stream> sortedStreams = new ArrayList<>(streams);
+        sortedStreams.sort(new StreamComparator());
+        return sortedStreams;
+    }
+}
+
+
+
+майн
+
+import seminar3.HW.Stream;
+import seminar3.HW.StreamIterator;
+import seminar3.HW.StreamService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        Student student1 = new Student(4, "aab", "aab", "aab");
+        Student student2 = new Student(2, "aaa", "aaa", "aaa");
+        Student student3 = new Student(3, "Aaa", "Aaa", "Aaa");
+        Student student4 = new Student(1, "bbb", "bbb", "bbb");
+
+        List<Student> studentList1 = new ArrayList<>();
+        studentList1.add(student1);
+        StudentGroup studentGroup1 = new StudentGroup(studentList1);
+
+        List<Student> studentList2 = new ArrayList<>();
+
+        studentList2.add(student2);
+        studentList2.add(student3);
+        studentList2.add(student4);
+        StudentGroup studentGroup2 = new StudentGroup(studentList2);
+
+        List<StudentGroup> groupsList = new ArrayList<>();
+        groupsList.add(studentGroup1);
+        groupsList.add(studentGroup2);
+
+        Stream stream = new Stream(groupsList);
+        Stream stream0 = new Stream(new ArrayList<>());
+
+        List<Stream> streams = new ArrayList<>();
+        streams.add(stream);
+        streams.add(stream0);
+
+        StreamService streamService = new StreamService(streams);
+        for (Stream item: streams) {
+            System.out.println(item);
+        }
+
+        System.out.println();
+
+        List<Stream> sortedStreams = streamService.sortBySize();
+        for (Stream item: sortedStreams) {
+            System.out.println(item);
+        }
+
+        StreamIterator streamIterator = new StreamIterator(stream);
+        while (streamIterator.hasNext()) {
+            System.out.println(streamIterator.next());
+        }
+
+        System.out.println();
+
+        for (StudentGroup group: stream) {
+            System.out.println(group);
+        }
+
+
+
+
+//        StudentGroupIterator iterator = new StudentGroupIterator(studentGroup);
+//        while (iterator.hasNext()) {
+//            Student student = iterator.next();
+//            if (student.firstName.equals("aab"))
+//                iterator.remove();
+//            else
+//                System.out.println(student);
+//        }
+
+//        StudentGroupService service = new StudentGroupService(studentGroup);
+////        service.removeByFIO("aaa", "aaa", "aaa");
+//
+//        List<Student> sortedStudents = service.sortedByID();
+//        for (Student student: sortedStudents) {
+//            System.out.println(student);
+//        }
+//        System.out.println();
+//        sortedStudents = service.sortedByFIO();
+//        for (Student student: sortedStudents) {
+//            System.out.println(student);
+//        }
+
+
+    }
+}
+
+студент
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class Student implements Comparable<Student> {
+    int studentId;
+    String firstName;
+    String secondName;
+    String lastName;
+
+    public Student(int studentId, String firstName, String secondName, String lastName) {
+        this.studentId = studentId;
+        this.firstName = firstName;
+        this.secondName = secondName;
+        this.lastName = lastName;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "studentId=" + studentId +
+                ", firstName='" + firstName + '\'' +
+                ", secondName='" + secondName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
+    }
+
+    @Override
+    public int compareTo(Student o) {
+        if (studentId > o.studentId)
+            return 1;
+        if (studentId < o.studentId)
+            return -1;
+        return 0;
+    }
+}
+
+студент компаратор
+
+import java.util.Comparator;
+
+public class StudentComparator implements Comparator<Student> {
+    @Override
+    public int compare(Student o1, Student o2) {
+        int result = o1.secondName.compareTo(o2.secondName);
+        if (result == 0) {
+            result = o1.firstName.compareTo(o2.firstName);
+            if (result == 0) {
+                return o1.lastName.compareTo(o2.lastName);
+            } else {
+                return result;
+            }
+        } else {
+            return result;
+        }
+    }
+}
+
+студент груп
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+public class StudentGroup implements Iterable<Student> {
+    List<Student> studentList;
+
+    public StudentGroup(List<Student> studentList) {
+        this.studentList = studentList;
+    }
+
+    public List<Student> getStudentList() {
+        return studentList;
+    }
+
+    public void addStudent (Student student) {
+        studentList.add(student);
+    }
+
+    @Override
+    public Iterator<Student> iterator() {
+        return new StudentGroupIterator(this);
+    }
+
+    @Override
+    public String toString() {
+        return "StudentGroup{" +
+                "studentList=" + studentList +
+                '}';
+    }
+}
+
+
+студент груп итератор
+
+import java.util.Iterator;
+import java.util.List;
+
+public class StudentGroupIterator implements Iterator<Student> {
+    List<Student> studentList;
+    int counter;
+
+    public StudentGroupIterator(StudentGroup studentGroup) {
+        this.studentList = studentGroup.getStudentList();
+        counter = 0;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return counter < studentList.size();
+    }
+
+    @Override
+    public Student next() {
+        if (hasNext())
+            return studentList.get(counter++);
+        return null;
+    }
+
+    @Override
+    public void remove() {
+        if (hasNext())
+            studentList.remove(--counter);
+    }
+}
+
+
+
+студент груп сервис
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class StudentGroupService {
+    StudentGroup studentGroup;
+
+    public StudentGroupService(StudentGroup studentGroup) {
+        this.studentGroup = studentGroup;
+    }
+
+    public void removeByFIO (String firstName, String secondName, String lastName) {
+        StudentGroupIterator iterator = new StudentGroupIterator(studentGroup);
+        while (iterator.hasNext()) {
+            Student student = iterator.next();
+            if (student.firstName.equals(firstName)
+                    && student.secondName.equals(secondName)
+                    && student.lastName.equals(lastName))
+                iterator.remove();
+        }
+    }
+
+    public List<Student> sortedByID() {
+        List<Student> studentList = new ArrayList<>(studentGroup.studentList);
+        Collections.sort(studentList);
+        return studentList;
+    }
+
+    public List<Student> sortedByFIO() {
+        List<Student> studentList = new ArrayList<>(studentGroup.studentList);
+        studentList.sort(new StudentComparator());
+        return studentList;
+    }
+}
