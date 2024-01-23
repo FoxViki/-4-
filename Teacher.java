@@ -1,14 +1,14 @@
 public class Teacher extends User {
-    static int counterTeacherId = 1;
+    static int TeacherId = 1;
     int teacherId;
 
     public Teacher(String secondName, String firstName, String lastName) {
         super(secondName, firstName, lastName);
-        this.teacherId = getCounterTeacherId();
+        this.teacherId = getTeacherId();
     }
 
-    static int getCounterTeacherId() {
-        return counterTeacherId++;
+    static int getTeacherId() {
+        return TeacherId++;
     }
 
     public void setSecondName(String secondName) {
