@@ -20,7 +20,7 @@ public class Main {
 
         TeacherView printTeachers = new TeacherView();
         printTeachers.sendOnConsole(teacherController.getTeachersList());
-        System.out.println();
+        
 
         teacherController.searchTeacherById(2, "Петров", "Петр", "Петрович");
         printTeachers.sendOnConsole(teacherController.getTeachersList());
